@@ -1,0 +1,205 @@
+# ============================================================
+# Python / Bioinformatics / Machine Learning
+# ============================================================
+
+
+# ------------------------------------------------------------
+# 1. Python
+# ------------------------------------------------------------
+
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Packaging
+build/
+dist/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Python tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pytype/
+.tox/
+.nox/
+.cache/
+
+# Coverage
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+
+# ------------------------------------------------------------
+# 2. Virtual Environments
+# ------------------------------------------------------------
+
+.venv/
+venv/
+env/
+ENV/
+my_env/
+
+# Local Conda installations
+anaconda3/
+miniconda3/
+
+
+# ------------------------------------------------------------
+# 3. Environment Variables / Secrets
+# ------------------------------------------------------------
+
+.env
+.env.*
+!.env.example
+
+*.key
+*.pem
+*.crt
+
+secrets.yaml
+secrets.yml
+config_local.yaml
+config.local.yaml
+
+
+# ------------------------------------------------------------
+# 4. Datasets
+# ------------------------------------------------------------
+
+# Large datasets should normally live outside Git.
+# Use DVC / Hugging Face Hub / Zenodo / Figshare if needed.
+
+/data/
+/dataset/
+/datasets/
+/raw_data/
+/processed_data/
+/external_data/
+/interim_data/
+
+# Large databases / bioinformatics files
+*.lmdb
+*.sqlite
+*.sqlite3
+*.db
+
+# Archives
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+*.rar
+
+
+# ------------------------------------------------------------
+# 5. ML Models / Checkpoints
+# ------------------------------------------------------------
+
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+*.pb
+*.h5
+*.hdf5
+*.model
+
+
+# ------------------------------------------------------------
+# 6. Training Outputs / Experiments
+# ------------------------------------------------------------
+
+/outputs/
+/output/
+/results/tmp/
+/experiments/
+
+logs/
+log/
+runs/
+
+lightning_logs/
+wandb/
+.wandb/
+mlruns/
+profiling/
+
+# Hydra
+.hydra/
+multirun/
+
+
+# ------------------------------------------------------------
+# 7. Jupyter
+# ------------------------------------------------------------
+
+.ipynb_checkpoints/
+
+# Uncomment if notebooks should never be committed:
+# *.ipynb
+
+
+# ------------------------------------------------------------
+# 8. IDE / Editors
+# ------------------------------------------------------------
+
+.idea/
+.vscode/
+
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+
+
+# ------------------------------------------------------------
+# 9. Operating System
+# ------------------------------------------------------------
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+
+# Linux
+.directory
+
+
+# ------------------------------------------------------------
+# 10. Temporary Files
+# ------------------------------------------------------------
+
+*.tmp
+*.temp
+*.bak
+*.old
+*.log
+
+tmp/
+temp/
