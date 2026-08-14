@@ -86,7 +86,6 @@ config.local.yaml
 # Large datasets should normally live outside Git.
 # Use DVC / Hugging Face Hub / Zenodo / Figshare if needed.
 
-/data/
 /dataset/
 /datasets/
 /raw_data/
