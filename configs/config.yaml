@@ -6,6 +6,7 @@
   - _self_
 
 name: debug-run
+ckpt_path: null
 
 paths:
   root_dir: ${hydra:runtime.cwd}

@@ -30,7 +30,7 @@ def run_training(cfg: DictConfig) -> dict[str, Any]:
     Path(cfg.paths.output_dir).mkdir(parents=True, exist_ok=True)
     OmegaConf.save(cfg, Path(cfg.paths.output_dir) / "resolved_config.yaml", resolve=True)
 
-    trainer.fit(model=model, datamodule=datamodule)
+    trainer.fit(model=model, datamodule=datamodule, ckpt_path=cfg.ckpt_path)
     best_ckpt = trainer.checkpoint_callback.best_model_path if trainer.checkpoint_callback else None
     trainer.test(model=model, datamodule=datamodule, ckpt_path=best_ckpt or None)
 
@@ -40,7 +40,7 @@ def run_training(cfg: DictConfig) -> dict[str, Any]:
     }
 
 
-@hydra.main(version_base="1.3", config_path="../configs", config_name="config")
+@hydra.main(version_base="1.3", config_path=str(Path(__file__).resolve().parents[1] / "configs"), config_name="config")
 def main(cfg: DictConfig) -> None:
     result = run_training(cfg)
     print(OmegaConf.to_yaml(result))

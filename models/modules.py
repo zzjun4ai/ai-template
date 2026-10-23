@@ -2,7 +2,6 @@ import rootutils
 
 root_path = rootutils.setup_root(__file__, indicator=".root", pythonpath=True)
 from models.operations import *
-from torch_geometric.nn import AttentionalAggregation, GATv2Conv, global_mean_pool
 
 
 class Dense(Module):

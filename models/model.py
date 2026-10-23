@@ -1,28 +1,41 @@
-﻿import torchmetrics
-
-from models.losses import *
-from models.operations import *
-from models.layers import *
 import lightning.pytorch as pl
-from omegaconf import OmegaConf
-from torch.optim.adamw import AdamW
-from transformers.optimization import get_cosine_with_min_lr_schedule_with_warmup
+from torch.optim import AdamW
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 
 class BaseModule(pl.LightningModule):
-    def __init__(self, total_steps=10000, lr=1e-3, lr_warmup_steps=100, weight_decay=1e-3, loss_name="infonce", **kwargs):
+    """Implement the model and task steps in a project-specific subclass."""
+
+    def __init__(
+        self,
+        lr=1e-3,
+        weight_decay=1e-3,
+        scheduler_factor=0.5,
+        scheduler_patience=5,
+        scheduler_min_lr=3e-6,
+        scheduler_monitor="valid/loss",
+    ):
         super().__init__()
-        self.total_steps = total_steps
-        self.lr = lr
-        self.lr_warmup_steps = lr_warmup_steps
-        self.weight_decay = weight_decay
-        self.loss_name = loss_name
-        self._loss_fn()
+        self.save_hyperparameters()
 
-    def _loss_fn(self):
-        pass
+    def forward(self, *args, **kwargs):
+        raise NotImplementedError("Implement forward() in your LightningModule subclass.")
 
-    def configure_optimizers(self):  # type: ignore
+    def training_step(self, batch, batch_idx):
+        raise NotImplementedError("Implement training_step() and your task loss.")
+
+    def validation_step(self, batch, batch_idx):
+        raise NotImplementedError(
+            "Implement validation_step() and log the configured monitor (default: valid/loss)."
+        )
+
+    def test_step(self, batch, batch_idx):
+        raise NotImplementedError("Implement test_step() for your task.")
+
+    def predict_step(self, batch, batch_idx, dataloader_idx=0):
+        raise NotImplementedError("Implement predict_step() to return prediction tensors.")
+
+    def configure_optimizers(self):
         decay_params = []
         no_decay_params = []
         for name, param in self.named_parameters():
@@ -33,11 +46,21 @@ class BaseModule(pl.LightningModule):
                 no_decay_params.append(param)
             else:
                 decay_params.append(param)
+        if not decay_params and not no_decay_params:
+            raise NotImplementedError("Add trainable parameters in your LightningModule subclass.")
         optimizer = AdamW(
-            [{"params": decay_params, "weight_decay": self.weight_decay}, {"params": no_decay_params, "weight_decay": 0.0}],
-            lr=self.lr,
+            [{"params": decay_params, "weight_decay": self.hparams.weight_decay}, {"params": no_decay_params, "weight_decay": 0.0}],
+            lr=self.hparams.lr,
             betas=(0.9, 0.98),
             eps=1e-8,
         )
-        scheduler = get_cosine_with_min_lr_schedule_with_warmup(optimizer, self.lr_warmup_steps, self.total_steps, min_lr_rate=0.01)
-        return {"optimizer": optimizer, "lr_scheduler": {"scheduler": scheduler, "interval": "step", "frequency": 1}}
+        scheduler = ReduceLROnPlateau(
+            optimizer,
+            factor=self.hparams.scheduler_factor,
+            patience=self.hparams.scheduler_patience,
+            min_lr=self.hparams.scheduler_min_lr,
+        )
+        return {
+            "optimizer": optimizer,
+            "lr_scheduler": {"scheduler": scheduler, "monitor": self.hparams.scheduler_monitor},
+        }
